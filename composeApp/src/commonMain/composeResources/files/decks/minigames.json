@@ -1,0 +1,22 @@
+{
+  "id": "minigames",
+  "name": "Minigames",
+  "description": "Fun mini-games and group activities",
+  "prompts": [
+    {"type": "minigame", "text": "Rock Paper Scissors Tournament! %s challenges anyone. Winner stays, loser drinks!", "numTargets": 1},
+    {"type": "minigame", "text": "Song Lyrics! %s sings a line, %s must continue. Fail = drink!", "numTargets": 2},
+    {"type": "minigame", "text": "Two Truths and a Lie! %s tells three things. Group guesses the lie!", "numTargets": 1},
+    {"type": "minigame", "text": "Spelling Bee! %s picks a hard word. Go around spelling. First to mess up drinks!", "numTargets": 1},
+    {"type": "minigame", "text": "Would You Rather! %s asks, everyone points to their choice. Minority drinks!", "numTargets": 1},
+    {"type": "minigame", "text": "Trivia! %s asks a question. First wrong answer drinks!", "numTargets": 1},
+    {"type": "minigame", "text": "Tongue Twister! %s picks one. Go around saying it 3 times fast. First to fail drinks!", "numTargets": 1},
+    {"type": "minigame", "text": "Charades! %s acts out a movie. First to guess gives out 3 drinks!", "numTargets": 1},
+    {"type": "virus", "text": "Viking Mode! When someone drinks, they must say 'SKOL' first!", "secondary": "Viking Mode is over! Drink freely, warriors!"},
+    {"type": "minigame", "text": "20 Questions! %s thinks of something. Group has 20 yes/no questions to guess!", "numTargets": 1},
+    {"type": "minigame", "text": "Flip Cup Battle! %s vs %s - flip your cup! Loser drinks!", "numTargets": 2},
+    {"type": "minigame", "text": "Story Time! %s starts a story with one sentence. Go around adding. Hesitation = drink!", "numTargets": 1},
+    {"type": "minigame", "text": "Heads Up! %s holds phone on forehead. Group gives clues for 60 seconds!", "numTargets": 1},
+    {"type": "minigame", "text": "Dance Off! %s and %s dance battle. Group votes. Loser drinks!", "numTargets": 2},
+    {"type": "minigame", "text": "Name That Tune! %s hums a song. First to guess it gives out 2 drinks!", "numTargets": 1}
+  ]
+}
