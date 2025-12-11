@@ -22,8 +22,29 @@ data class MinigamePrompt(
 
 data class VirusPrompt(
     override val text: String,
+    override val numTargets: Int,
     val secondary: String
 ) : Prompt {
     override val type: PromptType = PromptType.Virus
-    override val numTargets: Int = 0
+}
+
+data class BottomsUpPrompt(
+    override val text: String,
+    override val numTargets: Int
+) : Prompt {
+    override val type: PromptType = PromptType.BottomsUp
+}
+
+data class PunishmentPrompt(
+    override val text: String,
+    override val numTargets: Int
+) : Prompt {
+    override val type: PromptType = PromptType.Punishment
+}
+
+data class ArdentePrompt(
+    override val text: String,
+    override val numTargets: Int
+) : Prompt {
+    override val type: PromptType = PromptType.Ardente
 }

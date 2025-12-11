@@ -98,6 +98,7 @@ private fun ActiveGameContent(
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = onTap
             )
+            .padding(WindowInsets.safeDrawing.asPaddingValues())
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {

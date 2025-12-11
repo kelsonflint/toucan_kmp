@@ -36,8 +36,11 @@ class DeckRepository {
     private fun PromptJson.toDomain(): Prompt {
         return when (type.lowercase()) {
             "normal" -> NormalPrompt(text = text, numTargets = numTargets)
-            "minigame" -> MinigamePrompt(text = text, numTargets = numTargets)
-            "virus" -> VirusPrompt(text = text, secondary = secondary ?: "The effect has ended!")
+            "minigame", "game" -> MinigamePrompt(text = text, numTargets = numTargets)
+            "virus" -> VirusPrompt(text = text, numTargets = numTargets, secondary = secondary ?: "The effect has ended!")
+            "bottoms up" -> BottomsUpPrompt(text = text, numTargets = numTargets)
+            "punishment" -> PunishmentPrompt(text = text, numTargets = numTargets)
+            "ardente" -> ArdentePrompt(text = text, numTargets = numTargets)
             else -> NormalPrompt(text = text, numTargets = numTargets)
         }
     }
