@@ -10,9 +10,10 @@ class DeckRepository {
     private val json = Json { ignoreUnknownKeys = true }
 
     private val availableDecks = listOf(
-        DeckInfo("classic", "Classic", "A well-rounded set of party prompts", 20),
-        DeckInfo("spicy", "Spicy", "Turn up the heat with daring challenges", 20),
-        DeckInfo("minigames", "Minigames", "Fun mini-games and group activities", 15)
+        DeckInfo("getting_started", "Getting Started", "A well-rounded set of party prompts to get the fun going", 100),
+        DeckInfo("bar_night", "Bar Night", "Perfect for a casual night out with friends at the bar", 97),
+        DeckInfo("getting_crazy", "Getting Crazy", "Turn up the heat with daring challenges", 67),
+        DeckInfo("ardente", "Ardente", "Fiery and spicy challenges for the bold", 97)
     )
 
     fun getAvailableDecks(): List<DeckInfo> = availableDecks

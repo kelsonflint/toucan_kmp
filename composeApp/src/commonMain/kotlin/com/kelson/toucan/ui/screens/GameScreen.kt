@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,6 +28,7 @@ fun GameScreen(
     players: List<String>,
     onPlayAgain: () -> Unit,
     onExit: () -> Unit,
+    onSettings: () -> Unit = {},
     viewModel: GameViewModel = viewModel { GameViewModel() }
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -39,7 +41,9 @@ fun GameScreen(
         is GameUiState.Loading -> LoadingContent()
         is GameUiState.Active -> ActiveGameContent(
             state = state,
-            onTap = { viewModel.nextPrompt() }
+            onTap = { viewModel.nextPrompt() },
+            onExit = onExit,
+            onSettings = onSettings
         )
         is GameUiState.GameOver -> GameOverContent(
             onPlayAgain = onPlayAgain,
@@ -80,7 +84,9 @@ private fun LoadingContent() {
 @Composable
 private fun ActiveGameContent(
     state: GameUiState.Active,
-    onTap: () -> Unit
+    onTap: () -> Unit,
+    onExit: () -> Unit,
+    onSettings: () -> Unit
 ) {
     val colors = getPromptTypeColors(state.promptType, state.isVirusCure)
     val animatedBackground by animateColorAsState(
@@ -88,6 +94,7 @@ private fun ActiveGameContent(
         animationSpec = tween(durationMillis = 300),
         label = "background"
     )
+    var showMenu by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -107,7 +114,7 @@ private fun ActiveGameContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Top section - Prompt type label + virus indicator
+            // Top section - Prompt type label + menu + virus indicator
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -121,13 +128,51 @@ private fun ActiveGameContent(
                     letterSpacing = 4.sp
                 )
 
-                if (state.hasActiveVirus && !state.isVirusCure) {
-                    Icon(
-                        imageVector = Icons.Default.Warning,
-                        contentDescription = "Virus active",
-                        modifier = Modifier.size(32.dp),
-                        tint = colors.text.copy(alpha = 0.8f)
-                    )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (state.hasActiveVirus && !state.isVirusCure) {
+                        Icon(
+                            imageVector = Icons.Default.Warning,
+                            contentDescription = "Virus active",
+                            modifier = Modifier.size(32.dp),
+                            tint = colors.text.copy(alpha = 0.8f)
+                        )
+                    }
+
+                    Box {
+                        IconButton(
+                            onClick = { showMenu = true }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Menu",
+                                modifier = Modifier.size(32.dp),
+                                tint = colors.text.copy(alpha = 0.8f)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Settings") },
+                                onClick = {
+                                    showMenu = false
+                                    onSettings()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Exit Game") },
+                                onClick = {
+                                    showMenu = false
+                                    onExit()
+                                }
+                            )
+                        }
+                    }
                 }
             }
 

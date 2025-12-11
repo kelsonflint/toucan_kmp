@@ -49,6 +49,18 @@ object PromptColors {
     // Virus Cure - Tropical blue (sky)
     val VirusCureBackground = Color(0xFF29B6F6)
     val VirusCureText = Color(0xFF1A1A1A)
+
+    // Bottoms Up - Deep purple (party vibes)
+    val BottomsUpBackground = Color(0xFF7B1FA2)
+    val BottomsUpText = Color(0xFFFFFFFF)
+
+    // Punishment - Dark orange (warning)
+    val PunishmentBackground = Color(0xFFE65100)
+    val PunishmentText = Color(0xFFFFFFFF)
+
+    // Ardente - Hot pink (spicy)
+    val ArdenteBackground = Color(0xFFD81B60)
+    val ArdenteText = Color(0xFFFFFFFF)
 }
 
 data class PromptTypeColors(
@@ -79,6 +91,21 @@ fun getPromptTypeColors(type: PromptType, isVirusCure: Boolean = false): PromptT
             background = PromptColors.VirusBackground,
             text = PromptColors.VirusText,
             label = "VIRUS"
+        )
+        type == PromptType.BottomsUp -> PromptTypeColors(
+            background = PromptColors.BottomsUpBackground,
+            text = PromptColors.BottomsUpText,
+            label = "BOTTOMS UP"
+        )
+        type == PromptType.Punishment -> PromptTypeColors(
+            background = PromptColors.PunishmentBackground,
+            text = PromptColors.PunishmentText,
+            label = "PUNISHMENT"
+        )
+        type == PromptType.Ardente -> PromptTypeColors(
+            background = PromptColors.ArdenteBackground,
+            text = PromptColors.ArdenteText,
+            label = "ARDENTE"
         )
         else -> PromptTypeColors(
             background = PromptColors.NormalBackground,

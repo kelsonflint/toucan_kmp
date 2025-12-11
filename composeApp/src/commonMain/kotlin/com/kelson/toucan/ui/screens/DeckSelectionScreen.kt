@@ -4,8 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -18,7 +18,6 @@ import com.kelson.toucan.domain.models.DeckInfo
 import com.kelson.toucan.ui.utils.isLandscape
 import org.jetbrains.compose.resources.painterResource
 import toucan.composeapp.generated.resources.Res
-import toucan.composeapp.generated.resources.big_toucan
 import toucan.composeapp.generated.resources.deck_art
 import toucan.composeapp.generated.resources.toucan_flipped
 
@@ -35,52 +34,56 @@ fun DeckSelectionScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .padding(WindowInsets.systemBars.asPaddingValues())
             .padding(24.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
         ) {
-            if (!isLandscape()) {
-                Image(
-                    painterResource(Res.drawable.deck_art),
-                    null,
-                    modifier = Modifier.size(128.dp)
-                )
-                Image(
-                    painterResource(Res.drawable.toucan_flipped),
-                    null,
-                    modifier = Modifier.size(128.dp)
-                )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (!isLandscape()) {
+                    Image(
+                        painterResource(Res.drawable.deck_art),
+                        null,
+                        modifier = Modifier.size(128.dp)
+                    )
+                    Image(
+                        painterResource(Res.drawable.toucan_flipped),
+                        null,
+                        modifier = Modifier.size(128.dp)
+                    )
+                }
             }
-        }
-        Text(
-            text = "Choose a Deck",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Choose a Deck",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
 
-        Text(
-            text = "Playing with ${players.size} players",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Playing with ${players.size} players",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(decks) { deck ->
+            Spacer(modifier = Modifier.height(24.dp))
+
+            decks.forEach { deck ->
                 DeckCard(
                     deck = deck,
                     onClick = { onSelectDeck(deck.id) }
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
 
