@@ -18,12 +18,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kelson.toucan.domain.models.GameMode
 import com.kelson.toucan.ui.theme.getPromptTypeColors
 import com.kelson.toucan.ui.viewmodel.GameUiState
 import com.kelson.toucan.ui.viewmodel.GameViewModel
 
 @Composable
 fun GameScreen(
+    gameMode: GameMode,
     deckId: String,
     players: List<String>,
     onPlayAgain: () -> Unit,
@@ -33,8 +35,8 @@ fun GameScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(deckId, players) {
-        viewModel.initialize(deckId, players)
+    LaunchedEffect(gameMode, deckId, players) {
+        viewModel.initialize(gameMode, deckId, players)
     }
 
     when (val state = uiState) {
@@ -51,7 +53,7 @@ fun GameScreen(
         )
         is GameUiState.Error -> ErrorContent(
             message = state.message,
-            onRetry = { viewModel.initialize(deckId, players) }
+            onRetry = { viewModel.initialize(gameMode, deckId, players) }
         )
     }
 }

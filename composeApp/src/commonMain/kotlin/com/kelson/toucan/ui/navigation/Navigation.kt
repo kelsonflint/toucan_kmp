@@ -6,10 +6,13 @@ import kotlinx.serialization.Serializable
 object HomeRoute
 
 @Serializable
-object PlayerSetupRoute
+object GameModeSelectionRoute
 
 @Serializable
-data class DeckSelectionRoute(val playersJson: String)
+data class PlayerSetupRoute(val gameModeId: String)
 
 @Serializable
-data class GameRoute(val deckId: String, val playersJson: String)
+data class DeckSelectionRoute(val gameModeId: String)
+
+@Serializable
+data class GameRoute(val gameModeId: String, val deckId: String)

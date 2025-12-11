@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kelson.toucan.data.DeckRepository
 import com.kelson.toucan.domain.engine.GameEngine
+import com.kelson.toucan.domain.models.GameMode
 import com.kelson.toucan.domain.models.PromptDeck
 import com.kelson.toucan.domain.models.PromptType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,14 +33,16 @@ class GameViewModel : ViewModel() {
     private var gameEngine: GameEngine? = null
     private var currentDeck: PromptDeck? = null
     private var currentPlayers: List<String> = emptyList()
+    private var currentGameMode: GameMode = GameMode.ToucanDrink
 
-    fun initialize(deckId: String, players: List<String>) {
+    fun initialize(gameMode: GameMode, deckId: String, players: List<String>) {
         currentPlayers = players
+        currentGameMode = gameMode
         _uiState.value = GameUiState.Loading
 
         viewModelScope.launch {
             try {
-                val deck = repository.loadDeck(deckId)
+                val deck = repository.loadDeck(gameMode, deckId)
                 currentDeck = deck
                 gameEngine = GameEngine(deck, players)
                 startGame()

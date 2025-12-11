@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.kelson.toucan.data.PlayerRepository
+import com.kelson.toucan.domain.models.GameMode
 import com.kelson.toucan.ui.utils.isLandscape
 import org.jetbrains.compose.resources.painterResource
 import toucan.composeapp.generated.resources.Res
@@ -29,23 +31,26 @@ import toucan.composeapp.generated.resources.toucan_flipped
 
 @Composable
 fun PlayerSetupScreen(
-    onContinue: (List<String>) -> Unit,
+    gameMode: GameMode,
+    playerRepository: PlayerRepository,
+    onContinue: () -> Unit,
     onBack: () -> Unit
 ) {
     var playerName by remember { mutableStateOf("") }
-    var players by remember { mutableStateOf(listOf<String>()) }
+    val players by playerRepository.players.collectAsState()
     var showError by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
     fun addPlayer() {
-        val trimmedName = playerName.trim()
-        if (trimmedName.isNotEmpty() && !players.contains(trimmedName)) {
-            players = players + trimmedName
+        if (playerRepository.addPlayer(playerName)) {
             playerName = ""
             showError = false
         }
     }
+
+    val isValidPlayerCount = gameMode.isValidPlayerCount(players.size)
+    val canAddMorePlayers = gameMode.maxPlayers == null || players.size < gameMode.maxPlayers!!
 
     fun dismissKeyboard() {
         keyboardController?.hide()
@@ -89,7 +94,7 @@ fun PlayerSetupScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "At least 2 players required",
+                text = "${gameMode.displayName} • ${gameMode.playerCountDescription()}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -120,7 +125,7 @@ fun PlayerSetupScreen(
 
                 FilledIconButton(
                     onClick = { addPlayer() },
-                    enabled = playerName.isNotBlank()
+                    enabled = playerName.isNotBlank() && canAddMorePlayers
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add player")
                 }
@@ -170,7 +175,7 @@ fun PlayerSetupScreen(
                             )
                         }
                         IconButton(
-                            onClick = { players = players.filterIndexed { i, _ -> i != index } }
+                            onClick = { playerRepository.removePlayer(index) }
                         ) {
                             Icon(
                                 Icons.Default.Close,
@@ -182,10 +187,10 @@ fun PlayerSetupScreen(
                 }
             }
 
-            if (showError) {
+            if (showError && !isValidPlayerCount) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Add at least 2 players to continue",
+                    text = "Need ${gameMode.playerCountDescription()} to continue",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -207,14 +212,14 @@ fun PlayerSetupScreen(
 
             Button(
                 onClick = {
-                    if (players.size >= 2) {
-                        onContinue(players)
+                    if (isValidPlayerCount) {
+                        onContinue()
                     } else {
                         showError = true
                     }
                 },
                 modifier = Modifier.weight(1f),
-                enabled = players.size >= 2
+                enabled = isValidPlayerCount
             ) {
                 Text("Continue")
             }

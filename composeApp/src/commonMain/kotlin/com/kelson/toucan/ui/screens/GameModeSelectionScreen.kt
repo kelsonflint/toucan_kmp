@@ -6,32 +6,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.kelson.toucan.data.DeckRepository
-import com.kelson.toucan.domain.models.DeckInfo
 import com.kelson.toucan.domain.models.GameMode
 import com.kelson.toucan.ui.utils.isLandscape
 import org.jetbrains.compose.resources.painterResource
 import toucan.composeapp.generated.resources.Res
-import toucan.composeapp.generated.resources.deck_art
+import toucan.composeapp.generated.resources.big_toucan
+import toucan.composeapp.generated.resources.controller
 import toucan.composeapp.generated.resources.toucan_flipped
 
 @Composable
-fun DeckSelectionScreen(
-    gameMode: GameMode,
-    players: List<String>,
-    onSelectDeck: (String) -> Unit,
+fun GameModeSelectionScreen(
+    onSelectMode: (GameMode) -> Unit,
     onBack: () -> Unit
 ) {
-    val repository = remember { DeckRepository() }
-    val decks = remember(gameMode) { repository.getAvailableDecks(gameMode) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,26 +40,26 @@ fun DeckSelectionScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Row(
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (!isLandscape()) {
                     Image(
-                        painterResource(Res.drawable.deck_art),
-                        null,
+                        painterResource(Res.drawable.controller),
+                        contentDescription = null,
                         modifier = Modifier.size(128.dp)
                     )
                     Image(
                         painterResource(Res.drawable.toucan_flipped),
-                        null,
+                        contentDescription = null,
                         modifier = Modifier.size(128.dp)
                     )
                 }
             }
 
             Text(
-                text = "Choose a Deck",
+                text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -73,17 +68,17 @@ fun DeckSelectionScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "${gameMode.displayName} • ${players.size} players",
+                text = "What kind of fun are we having?",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            decks.forEach { deck ->
-                DeckCard(
-                    deck = deck,
-                    onClick = { onSelectDeck(deck.id) }
+            GameMode.entries.forEach { mode ->
+                GameModeCard(
+                    mode = mode,
+                    onClick = { onSelectMode(mode) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -101,8 +96,8 @@ fun DeckSelectionScreen(
 }
 
 @Composable
-private fun DeckCard(
-    deck: DeckInfo,
+private fun GameModeCard(
+    mode: GameMode,
     onClick: () -> Unit
 ) {
     Card(
@@ -114,49 +109,52 @@ private fun DeckCard(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = deck.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.primary
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "${deck.promptCount} prompts",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        text = mode.displayName,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
                     )
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.secondaryContainer
+                    ) {
+                        Text(
+                            text = mode.playerCountDescription(),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = mode.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = deck.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = "Select",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(start = 12.dp)
             )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Button(
-                onClick = onClick,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Select Deck")
-            }
         }
     }
 }
